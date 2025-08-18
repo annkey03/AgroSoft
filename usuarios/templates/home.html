@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Producción Agrícola</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f7f7f7; }
+        .navbar {
+            background: #388E3C;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: bold;
+        }
+        .navbar a:last-child { margin-right: 0; }
+        .container { max-width: 700px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+        .btn { background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+        .btn:hover { background: #388E3C; }
+        h2 { margin-top: 0; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div>
+            <a href="{% url 'home' %}">Home</a>
+        </div>
+        <div>
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Cerrar sesión</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container">
+        <h2>Bienvenido al sistema de producción agrícola</h2>
+        {% if messages %}
+    {% for message in messages %}
+        <div class="success">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+        {% if user.is_authenticated %}
+            <p>Hola, {{ user.username }}.</p>
+            {% if user.tipo == 'agricultor' %}
+                <a href="{% url 'solicitar_recomendacion' %}" class="btn">Solicitar recomendación de cultivo</a>
+            {% endif %}
+        
+        {% else %}
+            <p>Por favor, <a href="{% url 'registro' %}">regístrate</a> o <a href="{% url 'login' %}">inicia sesión</a>.</p>
+        {% endif %}
+        
+    </div>
+</body>
+</html>
