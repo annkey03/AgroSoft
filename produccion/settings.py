@@ -49,6 +49,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# Activar WhiteNoise solo en producción
+if not DEBUG:
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 ROOT_URLCONF = 'produccion.urls'
 
@@ -80,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'produccion',
         'USER': 'postgres',
-        'PASSWORD': '123456789',
+        'PASSWORD': 'vivis123',
         'HOST': 'localhost',
         'PORT': '5432',
     }
