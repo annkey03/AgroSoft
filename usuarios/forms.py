@@ -8,22 +8,20 @@ class AgricultorRegistroForm(UserCreationForm):
         fields = ['username', 'email', 'password1', 'password2']
 
 class SolicitudRecomendacionForm(forms.ModelForm):
+    municipio = forms.CharField(
+        max_length=100,
+        label='Municipio de siembra',
+        widget=forms.TextInput(attrs={'placeholder': 'Ej: Chía, Cajicá, Zipaquirá'})
+    )
     fecha_cultivo = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}),
-        label='Fecha exacta de siembra'
-    )
-    cantidad = forms.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        label='Cantidad a cultivar (kg)',
-        min_value=0.1
+        label='Fecha de siembra'
     )
     
     class Meta:
         model = SolicitudRecomendacion
-        fields = ['cultivo_deseado', 'fecha_cultivo', 'cantidad']
+        fields = ['municipio', 'fecha_cultivo']
         labels = {
-            'cultivo_deseado': '¿Qué cultivo deseas sembrar?',
-            'fecha_cultivo': 'Fecha exacta de siembra',
-            'cantidad': 'Cantidad a cultivar (kg)'
+            'municipio': 'Municipio de siembra',
+            'fecha_cultivo': 'Fecha de siembra'
         }
