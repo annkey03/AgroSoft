@@ -6,6 +6,12 @@ class AgricultorRegistroForm(UserCreationForm):
     class Meta:
         model = Usuario
         fields = ['username', 'email', 'password1', 'password2']
+    def __init__(self, *args, **kwargs):
+           super(AgricultorRegistroForm, self).__init__(*args, **kwargs)
+           self.fields['username'].widget.attrs['placeholder'] = 'Nombre de usuario'
+           self.fields['email'].widget.attrs['placeholder'] = 'Correo electrónico'
+           self.fields['password1'].widget.attrs['placeholder'] = 'Contraseña'
+           self.fields['password2'].widget.attrs['placeholder'] = 'Confirmar contraseña'
 
 class SolicitudRecomendacionForm(forms.ModelForm):
     fecha_cultivo = forms.DateField(
