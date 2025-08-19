@@ -6,5 +6,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('solicitar-recomendacion/', views.solicitar_recomendacion, name='solicitar_recomendacion'),
+    path('recuperar-contrasena/', views.recuperar_contrasena, name='recuperar_contrasena'),
+    path('cambiar-contrasena/<str:token>/', views.cambiar_contrasena, name='cambiar_contrasena'),
     path('', views.home, name='home'),
 ]

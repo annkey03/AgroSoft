@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Iniciar sesión</title>
+    <title>Cambiar Contraseña</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; background: #f7f7f7; }
         .navbar {
@@ -36,28 +36,29 @@
             <a href="{% url 'home' %}">Home</a>
         </div>
         <div>
-            <a href="{% url 'registro' %}">Registrarse</a>
+            <a href="{% url 'login' %}">Iniciar Sesión</a>
         </div>
     </div>
     <div class="container">
-        <h2>Iniciar sesión</h2>
-        {% if error %}
-            <div class="error">{{ error }}</div>
+        <h2>Cambiar Contraseña</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+            {% endfor %}
         {% endif %}
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
-                <label for="username">Usuario:</label>
-                <input type="text" name="username" id="username" required>
+                <label for="nueva_contrasena">Nueva Contraseña:</label>
+                <input type="password" name="nueva_contrasena" id="nueva_contrasena" required minlength="8">
             </div>
             <div class="form-group">
-                <label for="password">Contraseña:</label>
-                <input type="password" name="password" id="password" required>
+                <label for="confirmar_contrasena">Confirmar Contraseña:</label>
+                <input type="password" name="confirmar_contrasena" id="confirmar_contrasena" required minlength="8">
             </div>
-            <button type="submit" class="btn">Entrar</button>
+            <button type="submit" class="btn">Cambiar Contraseña</button>
         </form>
-        <p>¿Olvidaste tu contraseña? <a href="{% url 'recuperar_contrasena' %}">Recupérala aquí</a></p>
-        <p>¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate</a></p>
+        <p>¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar Sesión</a></p>
     </div>
 </body>
 </html>
