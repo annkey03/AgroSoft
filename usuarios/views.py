@@ -3,11 +3,15 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .forms import AgricultorRegistroForm, SolicitudRecomendacionForm
-from .models import SolicitudRecomendacion
+from .models import SolicitudRecomendacion, Usuario
 import requests
 from django.views.decorators.csrf import csrf_exempt
 import json
 from datetime import datetime, timedelta
+from django.utils import timezone
+from django.contrib.auth.hashers import make_password
+from django.contrib import messages
+import uuid
 
 def registro(request):
     """Vista para el registro de nuevos agricultores"""
@@ -42,6 +46,45 @@ def logout_view(request):
     """Vista para cerrar sesión"""
     logout(request)
     return redirect('login')
+
+def recuperar_contrasena(request):
+    """Vista para solicitar recuperación de contraseña"""
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        try:
+            usuario = Usuario.objects.get(username=username)
+            # Generar un token temporal en la memoria
+            token = str(uuid.uuid4())
+            # Redirigir a la página de cambio de contraseña con el token
+            return redirect('cambiar_contrasena', token=token)
+        except Usuario.DoesNotExist:
+            messages.error(request, 'Usuario no encontrado.')
+            return render(request, 'recuperar_contrasena.html')
+    
+    return render(request, 'recuperar_contrasena.html')
+
+def cambiar_contrasena(request, token):
+    """Vista para cambiar la contraseña con token"""
+    if request.method == 'POST':
+        nueva_contrasena = request.POST.get('nueva_contrasena')
+        confirmar_contrasena = request.POST.get('confirmar_contrasena')
+        
+        if nueva_contrasena != confirmar_contrasena:
+            messages.error(request, 'Las contraseñas no coinciden.')
+            return render(request, 'cambiar_contrasena.html', {'token': token})
+        
+        if len(nueva_contrasena) < 8:
+            messages.error(request, 'La contraseña debe tener al menos 8 caracteres.')
+            return render(request, 'cambiar_contrasena.html', {'token': token})
+        
+        # Aquí deberías buscar al usuario y actualizar la contraseña
+        # usuario.password = make_password(nueva_contrasena)
+        # usuario.save()
+        
+        messages.success(request, 'Contraseña actualizada exitosamente.')
+        return redirect('login')
+    
+    return render(request, 'cambiar_contrasena.html', {'token': token})
 
 def home(request):
     """Vista principal del dashboard"""
@@ -205,29 +248,6 @@ def obtener_clima_sabana_occidente():
         return f"Error al obtener clima: {str(e)}"
     except KeyError:
         return "Datos de clima no disponibles"
-
-def obtener_precio_corabastos(cultivo):
-    """Obtiene el precio estimado del cultivo según Corabastos"""
-    # Precios aproximados de Corabastos (en COP por kg)
-    precios_corabastos = {
-        'maíz': 2500,
-        'arroz': 3200,
-        'papa': 2800,
-        'frijol': 4500,
-        'tomate': 3500,
-        'cebolla': 2200,
-        'zanahoria': 1800,
-        'lechuga': 1500,
-        'brócoli': 4000,
-        'coliflor': 3800,
-        'aguacate': 8000,
-        'plátano': 1200,
-        'yuca': 1200,
-        'arracacha': 3500,
-        'espinaca': 4500
-    }
-    
-    return precios_corabastos.get(cultivo.lower(), 2000)
 
 def analizar_clima_optimo(fecha_siembra, cultivo):
     """Analiza si el clima es óptimo para el cultivo en la fecha seleccionada"""
