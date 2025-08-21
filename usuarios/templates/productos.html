@@ -1,0 +1,43 @@
+<!DOCTYPE html> 
+<html lang="en">
+    {% load static %}
+<head>
+    <title>AgroSoft</title>
+    <link rel="icon" type="logo/png" href="{% static 'img/logo.png' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <div class="contenedor-home">
+        <div class="navbar">
+            <div class="navbar-left">
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Cerrar sesión</a>
+                {% endif %}
+            </div>
+            <div class="navbar-right">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'productos' %}">Productos</a>
+            </div>
+        </div>
+
+        <div class="sub-navbar">
+            <a class="add-product" href="{% url 'home' %}">+ Agregar Producto</a>
+        </div>
+        <div class="products">
+            <div class="container-products">
+                <p>Fresa</p>
+                <a class="btn-product" href="{% url 'solicitar_recomendacion' %}">Ver Registro</a>
+            </div>
+            <div class="container-products">
+                <p>Papa</p>
+                <a class="btn-product" href="{% url 'solicitar_recomendacion' %}">Ver Registro</a>
+            </div>
+            <div class="container-products">
+                <p>Borojo</p>
+                <a class="btn-product" href="{% url 'solicitar_recomendacion' %}">Ver Registro</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

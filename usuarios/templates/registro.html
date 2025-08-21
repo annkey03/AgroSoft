@@ -7,31 +7,33 @@
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
-    <div class="login-box">
-        <h4><img class="logo" src="{% static 'img/logo.png' %}">Registro</h4>
-        <form method="post">
-            {% csrf_token %}
-            {% for field in form %}
-                <div class="form-group">
-                    {{ field }}
-                    
-                    {% for error in field.errors %}
-                        <div class="errorlist">{{ error }}</div>
-                    {% endfor %}
+    <div class="contenedor">
+        <div class="login-box">
+            <h4><img class="logo" src="{% static 'img/logo.png' %}">Registro</h4>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field }}
+                        
+                        {% for error in field.errors %}
+                            <div class="errorlist">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                {% if form.non_field_errors %}
+                    <div class="errorlist">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="buttons">
+                    <button type="submit" class="button-login">Registrarse</button>
+                    <a class="button-register" href="{% url 'login' %}">Iniciar Sesion</a>
                 </div>
-            {% endfor %}
-            {% if form.non_field_errors %}
-                <div class="errorlist">
-                    {% for error in form.non_field_errors %}
-                        {{ error }}
-                    {% endfor %}
-                </div>
-            {% endif %}
-            <div class="buttons">
-                <button type="submit" class="button-login">Registrarse</button>
-                <a class="button-register" href="{% url 'login' %}">Iniciar Sesion</a>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </body>
 </html>

@@ -9,4 +9,5 @@ urlpatterns = [
     path('recuperar-contrasena/', views.recuperar_contrasena, name='recuperar_contrasena'),
     path('cambiar-contrasena/<str:token>/', views.cambiar_contrasena, name='cambiar_contrasena'),
     path('', views.home, name='home'),
+    path('productos/', views.products, name='productos'),
 ]
