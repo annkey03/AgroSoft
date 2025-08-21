@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.db import models
 from .forms import AgricultorRegistroForm, SolicitudRecomendacionForm
 from .models import SolicitudRecomendacion, Usuario
 import requests
@@ -12,6 +13,10 @@ from django.utils import timezone
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 import uuid
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
+from django.urls import reverse
 
 def registro(request):
     """Vista para el registro de nuevos agricultores"""
@@ -48,23 +53,70 @@ def logout_view(request):
     return redirect('login')
 
 def recuperar_contrasena(request):
-    """Vista para solicitar recuperación de contraseña"""
+    """Vista para solicitar recuperación de contraseña por email"""
     if request.method == 'POST':
         username = request.POST.get('username')
         try:
-            usuario = Usuario.objects.get(username=username)
-            # Generar un token temporal en la memoria
+            # Buscar por username o email
+            usuario = Usuario.objects.filter(
+                models.Q(username=username) | models.Q(email=username)
+            ).first()
+            
+            if not usuario:
+                raise Usuario.DoesNotExist
+            
+            # Generar token y fecha de expiración
             token = str(uuid.uuid4())
-            # Redirigir a la página de cambio de contraseña con el token
-            return redirect('cambiar_contrasena', token=token)
+            expires_at = timezone.now() + timedelta(hours=24)
+            
+            # Guardar token en la base de datos
+            usuario.reset_token = token
+            usuario.reset_token_expires = expires_at
+            usuario.save()
+            
+            # Construir URL de reseteo
+            reset_url = request.build_absolute_uri(
+                reverse('cambiar_contrasena', args=[token])
+            )
+            
+            # Renderizar template de email
+            email_html = render_to_string('email_recuperacion.html', {
+                'usuario': usuario,
+                'reset_url': reset_url
+            })
+            
+            # Enviar email
+            send_mail(
+                'Recuperación de Contraseña - AgroSoft',
+                f'Hola {usuario.username},\n\nPara restablecer tu contraseña, visita: {reset_url}\n\nEste enlace expira en 24 horas.',
+                settings.DEFAULT_FROM_EMAIL,
+                [usuario.email],
+                fail_silently=False,
+                html_message=email_html
+            )
+            
+            messages.success(request, 'Se ha enviado un email con instrucciones para restablecer tu contraseña.')
+            return redirect('login')
+            
         except Usuario.DoesNotExist:
             messages.error(request, 'Usuario no encontrado.')
-            return render(request, 'recuperar_contrasena.html')
     
     return render(request, 'recuperar_contrasena.html')
 
 def cambiar_contrasena(request, token):
     """Vista para cambiar la contraseña con token"""
+    try:
+        usuario = Usuario.objects.get(reset_token=token)
+        
+        # Verificar si el token es válido
+        if not usuario.is_reset_token_valid():
+            messages.error(request, 'El enlace de recuperación ha expirado o es inválido.')
+            return redirect('recuperar_contrasena')
+            
+    except Usuario.DoesNotExist:
+        messages.error(request, 'El enlace de recuperación es inválido.')
+        return redirect('recuperar_contrasena')
+    
     if request.method == 'POST':
         nueva_contrasena = request.POST.get('nueva_contrasena')
         confirmar_contrasena = request.POST.get('confirmar_contrasena')
@@ -77,14 +129,17 @@ def cambiar_contrasena(request, token):
             messages.error(request, 'La contraseña debe tener al menos 8 caracteres.')
             return render(request, 'cambiar_contrasena.html', {'token': token})
         
-        # Aquí deberías buscar al usuario y actualizar la contraseña
-        # usuario.password = make_password(nueva_contrasena)
-        # usuario.save()
+        # ✅ Actualizar contraseña de manera segura
+        usuario.set_password(nueva_contrasena)
+        usuario.reset_token = None
+        usuario.reset_token_expires = None
+        usuario.save()
         
-        messages.success(request, 'Contraseña actualizada exitosamente.')
+        messages.success(request, 'Contraseña actualizada exitosamente. Ahora puedes iniciar sesión.')
         return redirect('login')
     
     return render(request, 'cambiar_contrasena.html', {'token': token})
+
 
 def home(request):
     """Vista principal del dashboard"""
