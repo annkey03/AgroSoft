@@ -9,21 +9,21 @@
 <body>
     <div class="contenedor">
         <div class="login-box">
-            <h4>Recuperar Contraseña</h4>
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <input type="text" name="username" id="username" required placeholder="Usuario">
-                </div>
-                <button type="submit" class="button-send">Enviar Solicitud</button>
-            </form>
-            <p class="description">¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar Sesión</a></p>
-        </div>
+                    <h2>Recuperar Contraseña</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Usuario o Email:</label>
+                <input type="text" name="username" id="username" required>
+            </div>
+            <button type="submit" class="btn">Enviar Solicitud</button>
+        </form>
+        <p>¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar Sesión</a></p>
     </div>
 </body>
 </html>
