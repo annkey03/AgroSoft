@@ -1,6 +1,213 @@
-<h2>Solicitar recomendación de cultivo</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Solicitar</button>
-</form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendación de Cultivos - Sabana de Occidente</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            font-weight: 300;
+        }
+        .clima-info {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .form-section {
+            padding: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        input[type="text"], input[type="date"], input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .recomendaciones {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        .recomendacion-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-left: 5px solid #4CAF50;
+        }
+        .recomendacion-card h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+        .recomendacion-card .details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .detail-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .detail-item strong {
+            color: #2c3e50;
+        }
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Recomendación de Cultivos</h1>
+            <p>Sabana de Occidente - Colombia</p>
+        </div>
+        
+        {% if clima_actual %}
+        <div class="clima-info">
+            <strong>🌤️ Clima Actual:</strong> {{ clima_actual }}
+        </div>
+        {% endif %}
+
+        <div class="form-section">
+            {% if recomendaciones %}
+            <div class="success-message">
+                <strong>✅ Recomendaciones generadas exitosamente!</strong>
+                <p>Basadas en la fecha de siembra: <strong>{{ fecha_cultivo|date:"d/m/Y" }}</strong></p>
+            </div>
+            
+            <div class="recomendaciones">
+                <h2>🎯 Tus 3 Mejores Opciones</h2>
+                
+                {% for recomendacion in recomendaciones %}
+                <div class="recomendacion-card">
+                    <h3>{{ recomendacion.cultivo }}</h3>
+                    <p>{{ recomendacion.descripcion }}</p>
+                    
+                    <div class="details">
+                        <div class="detail-item">
+                            <strong>📅 Cosecha estimada:</strong><br>
+                            {{ recomendacion.fecha_cosecha|date:"d/m/Y" }}
+                        </div>
+                        <div class="detail-item">
+                            <strong>⏱️ Días de cultivo:</strong><br>
+                            {{ recomendacion.dias_cultivo }} días
+                        </div>
+                        <div class="detail-item">
+                            <strong>📊 Rendimiento:</strong><br>
+                            {{ recomendacion.rendimiento_kg }} kg
+                        </div>
+                        <div class="detail-item">
+                            <strong>💰 Ingreso estimado:</strong><br>
+                            ${{ recomendacion.ingreso_proyectado|floatformat:0 }}
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <strong>📝 Cuidados especiales:</strong><br>
+                        {{ recomendacion.cuidados }}
+                    </div>
+                    
+                    <div class="detail-item">
+                        <strong>✅ Viabilidad:</strong> {{ recomendacion.viabilidad }}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <a href="{% url 'solicitar_recomendacion' %}" class="back-link">← Nueva Solicitud</a>
+            </div>
+            
+            {% else %}
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.municipio.id_for_label }}">
+                        {{ form.municipio.label }}
+                    </label>
+                    {{ form.municipio }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.fecha_cultivo.id_for_label }}">
+                        {{ form.fecha_cultivo.label }}
+                    </label>
+                    {{ form.fecha_cultivo }}
+                </div>
+                
+                <button type="submit">🚀 Generar Recomendaciones</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

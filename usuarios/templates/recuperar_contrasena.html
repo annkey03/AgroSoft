@@ -1,46 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
+    {% load static %}
 <head>
-    <meta charset="UTF-8">
-    <title>Recuperar Contraseña</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f7f7f7; }
-        .navbar {
-            background: #388E3C;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .navbar a {
-            color: #fff;
-            text-decoration: none;
-            margin-right: 20px;
-            font-weight: bold;
-        }
-        .navbar a:last-child { margin-right: 0; }
-        .container { max-width: 400px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
-        h2 { margin-top: 0; }
-        .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 6px; font-weight: bold; }
-        input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        .btn { background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border: none; border-radius: 5px; cursor: pointer; }
-        .btn:hover { background: #388E3C; }
-        .error { color: #d32f2f; margin-bottom: 15px; }
-        .success { color: #388E3C; margin-bottom: 15px; }
-    </style>
+    <title>AgroSoft</title>
+    <link rel="icon" type="logo/png" href="{% static 'img/logo.png' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
-    <div class="navbar">
-        <div>
-            <a href="{% url 'home' %}">Home</a>
-        </div>
-        <div>
-            <a href="{% url 'login' %}">Iniciar Sesión</a>
-        </div>
-    </div>
-    <div class="container">
-        <h2>Recuperar Contraseña</h2>
+    <div class="contenedor">
+        <div class="login-box">
+                    <h2>Recuperar Contraseña</h2>
         {% if messages %}
             {% for message in messages %}
                 <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
@@ -49,7 +18,7 @@
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
-                <label for="username">Usuario:</label>
+                <label for="username">Usuario o Email:</label>
                 <input type="text" name="username" id="username" required>
             </div>
             <button type="submit" class="btn">Enviar Solicitud</button>

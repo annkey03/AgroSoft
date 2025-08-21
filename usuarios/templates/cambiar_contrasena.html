@@ -1,64 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
+    {% load static %}
 <head>
-    <meta charset="UTF-8">
-    <title>Cambiar Contraseña</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f7f7f7; }
-        .navbar {
-            background: #388E3C;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .navbar a {
-            color: #fff;
-            text-decoration: none;
-            margin-right: 20px;
-            font-weight: bold;
-        }
-        .navbar a:last-child { margin-right: 0; }
-        .container { max-width: 400px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
-        h2 { margin-top: 0; }
-        .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 6px; font-weight: bold; }
-        input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        .btn { background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border: none; border-radius: 5px; cursor: pointer; }
-        .btn:hover { background: #388E3C; }
-        .error { color: #d32f2f; margin-bottom: 15px; }
-        .success { color: #388E3C; margin-bottom: 15px; }
-    </style>
+
+    <title>AgroSoft</title>
+    <link rel="icon" type="logo/png" href="{% static 'img/logo.png' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
-    <div class="navbar">
-        <div>
-            <a href="{% url 'home' %}">Home</a>
+    <div class="contenedor">
+        <div class="login-box">
+            <h4>Cambiar Contraseña</h4>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input placeholder="Nueva Contraseña" type="password" name="nueva_contrasena" id="nueva_contrasena" required minlength="8">
+                </div>
+                <div class="form-group">
+                    <input placeholder="Confirmar Contraseña" type="password" name="confirmar_contrasena" id="confirmar_contrasena" required minlength="8">
+                </div>
+                <button type="submit" class="button-send">Cambiar Contraseña</button>
+            </form>
+            <p class="description">¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar Sesión</a></p>
         </div>
-        <div>
-            <a href="{% url 'login' %}">Iniciar Sesión</a>
-        </div>
-    </div>
-    <div class="container">
-        <h2>Cambiar Contraseña</h2>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="nueva_contrasena">Nueva Contraseña:</label>
-                <input type="password" name="nueva_contrasena" id="nueva_contrasena" required minlength="8">
-            </div>
-            <div class="form-group">
-                <label for="confirmar_contrasena">Confirmar Contraseña:</label>
-                <input type="password" name="confirmar_contrasena" id="confirmar_contrasena" required minlength="8">
-            </div>
-            <button type="submit" class="btn">Cambiar Contraseña</button>
-        </form>
-        <p>¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar Sesión</a></p>
     </div>
 </body>
 </html>
