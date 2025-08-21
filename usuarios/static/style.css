@@ -201,34 +201,60 @@ body{
 
 .sub-navbar{
   display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.combo-box{
+.zones{
   color: #003C1F;
   padding-left: 10px;
   font-size: 25px;
+  margin-top: 20px;
+  margin-bottom: 5px;
+  align-items: center;
+  display: flex;
+}
+
+.combo-box{
+  margin-left: 10px;
+  border:#003C1F 1px solid;
+  height: 30px;
+  border-radius: 6px;
+  background-color: #003C1F;
+  color: white;
+}
+
+.btn-create{
+  text-decoration: none;
+  font-size: 25px;
+  color: #003C1F;
+  margin-right: 30px;
+  margin-top: 20px;
+}
+
+.btn-create:hover{
+  color: #388E3C;
 }
 
 .container { 
   max-width: 1100px; 
   margin: 30px auto; 
   background-color: #CBFFC5; 
-  padding: 30px; 
+  padding: 10px;
   border-radius: 8px; 
-  box-shadow: 0 2px 8px black; 
+  box-shadow: 0 2px 8px #388E3C; 
 }
-        
-.btn { 
-  background: #003C1F;
-  color: white; 
-  padding: 10px 20px; 
-  text-decoration: none; 
-  border-radius: 5px; 
-  font-size: 20px;
+
+.container h4{
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  color: #003C1F;
 }
-        
-.btn:hover { 
-  background: #388E3C; 
+
+.container li{
+  font-size: 1.1rem;
+  color: #1b5e20;
 }
 
 .containers{
@@ -294,5 +320,4 @@ body{
 
 .add-product:hover{
   color: #388E3C;
-  text-decoration: underline;
 }

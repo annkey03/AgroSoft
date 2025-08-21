@@ -21,24 +21,29 @@
         </div>
 
         <div class="sub-navbar">
-            <p class="combo-box">Zona De Cultivo Principal</p>
+            <p class="zones">Zona De Cultivo Principal
+                <select class="combo-box" id="zonas" name="zonas">
+                <option>...</option>
+                <option value="madrid">Madrid</option>
+                <option value="facatativa">Facatativa</option>
+                <option value="funza">Funza</option>
+                <option value="mosquera">Mosquera</option>
+            </select>
+            </p>
+            <a class="btn-create" href="{% url 'solicitar_recomendacion' %}">+Cultivar</a>
         </div>
 
         <div class="container">
-            <h3>Bienvenido al sistema de producción agrícola</h3>
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="success">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-            {% if user.is_authenticated %}
-                <p>Hola, {{ user.username }}.</p>
-                {% if user.tipo == 'agricultor' %}
-                    <a class="btn" href="{% url 'solicitar_recomendacion' %}">Solicitar recomendación de cultivo</a>
-                {% endif %}
-            {% else %}
-                <p>Por favor, <a href="{% url 'registro' %}">regístrate</a> o <a href="{% url 'login' %}">inicia sesión</a>.</p>
-            {% endif %}
+            <h4>Recomendaciones del dia de hoy</h4>
+            <ul>
+                <li><strong>Cultivo:</strong> {{ cultivo }}</li>
+                <li><strong>Cantidad:</strong> {{ cantidad }} kg</li>
+                <li><strong>Fecha de siembra:</strong> {{ fecha_siembra|date:"d/m/Y" }}</li>
+                <li><strong>Fecha estimada de cosecha:</strong> {{ fecha_cosecha|date:"d/m/Y" }}</li>
+                <li><strong>Días de cultivo:</strong> {{ dias }} días</li>
+                <li><strong>Viabilidad:</strong> {{ viabilidad }}</li>
+                <li><strong>Clima actual:</strong> {{ clima }}</li>
+            </ul>
         </div>
 
         <div class="containers">
