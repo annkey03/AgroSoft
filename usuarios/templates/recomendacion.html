@@ -1,6 +1,17 @@
-<h2>Solicitar recomendación de cultivo</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Solicitar</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <title>AgroSoft</title>
+    <link rel="icon" type="logo/png" href="{% static 'img/logo.png' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+        <h2>Solicitar recomendación de cultivo</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Solicitar</button>
+            </form>
+</body>
+</html>

@@ -316,3 +316,6 @@ def api_recomendacion(request):
             return JsonResponse({'error': str(e)}, status=500)
     
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+def products(request):
+    return render(request, 'productos.html')

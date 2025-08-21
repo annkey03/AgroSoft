@@ -7,13 +7,27 @@ body{
   align-items: center;
   font-family: Arial, sans-serif;
   font-size: 2rem;
+  background-color: white;
+}
+
+/*Estilos del Login*/
+
+.contenedor{
+  margin: 0;
+  padding: 0;
+  width: 100vmax;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  font-size: 2rem;
+  background-color: white;
   background-image: url("./img/fondo.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
-
-/*Estilos del Login*/
 
 .login-box {
   background-color: rgba(0, 0, 0, 0.6);
@@ -25,8 +39,18 @@ body{
 }
 
 .error{
-    font-size: 15px;
-    color: red;
+  font-size: 15px;
+  color: white;
+}
+
+.messages.error{
+  font-size: 15px;
+  color: white;
+}
+
+.messages.success{
+  font-size: 15px;
+  color: white;
 }
 
 .logo{
@@ -63,6 +87,10 @@ body{
   text-decoration: none;
 }
 
+.button-login:hover{
+  background-color: #388E3C;
+}
+
 .button-register{
   background: transparent;
   border: none;
@@ -74,6 +102,7 @@ body{
 
 .button-register:hover{
   text-decoration: underline;
+  color: #003C1F;
 }
 
 .button-forget{
@@ -87,10 +116,20 @@ body{
 
 .button-forget:hover{
   text-decoration: underline;
+  color: #003C1F;
 }
 
 .description{
   font-size: 15px;
+}
+
+.description a{
+  text-decoration: none;
+  color:#003C1F;
+}
+
+.description a:hover{
+  text-decoration: underline;
 }
 
 .button-back{
@@ -101,5 +140,159 @@ body{
 }
 
 .button-back:hover{
+  text-decoration: underline;
+}
+
+.button-send{
+  color: white;
+  background-color: #003C1F;
+  border-radius: 10px;
+  font-size: 25px;
+  border: none;
+  width: 300px;
+  cursor: pointer;
+  height: 40px;
+  text-decoration: none;
+}
+
+/*Estilos para Home*/
+
+.contenedor-home{
+  font-family: Arial, sans-serif; 
+  margin: 0; 
+  background: white;
+  height: 100vh;
+  width: 100vmax;
+}
+
+.navbar{
+  position: relative;
+  background: #003C1F;
+  padding: 15px 40px;
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+}
+
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+  margin-right: 20px;
+  padding: 5px;
+  font-weight: bold;
+}
+
+.navbar a:hover{
+  color: #388E3C;
+}
+
+.navbar-left{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-right {
+  display: flex;
+  position: absolute;
+  left: 50%;  
+  gap: 20px;
+}
+
+.sub-navbar{
+  display: flex;
+}
+
+.combo-box{
+  color: #003C1F;
+  padding-left: 10px;
+  font-size: 25px;
+}
+
+.container { 
+  max-width: 1100px; 
+  margin: 30px auto; 
+  background-color: #CBFFC5; 
+  padding: 30px; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 8px black; 
+}
+        
+.btn { 
+  background: #003C1F;
+  color: white; 
+  padding: 10px 20px; 
+  text-decoration: none; 
+  border-radius: 5px; 
+  font-size: 20px;
+}
+        
+.btn:hover { 
+  background: #388E3C; 
+}
+
+.containers{
+  display: flex;
+}
+
+.container-graphics{
+  width: 500px; 
+  margin: 40px auto; 
+  background: #fff; 
+  padding: 30px; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 8px black; 
+}
+
+.container-weather{
+  width: 500px; 
+  margin: 40px auto; 
+  background: #fff; 
+  padding: 30px; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 8px black; 
+}
+
+/*Estilos para Productos*/
+
+.products{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.container-products{
+  width: 500px; 
+  margin-left: 20px;
+  padding-left: 20px;
+  background-color: #ffffff; 
+  border-radius: 20px 0px 20px 0px; 
+  border: 2px solid #9dffa2;
+}
+
+.container-products p{
+  font-size: 25px;
+  color: black;
+  margin: 10px;
+}
+
+.btn-product{
+  background: transparent;
+  color: gray; 
+  text-decoration: none; 
+  border-radius: 5px; 
+  font-size: 20px;
+  margin: 10px;
+}
+
+.add-product{
+  color: #003C1F;
+  padding: 10px;
+  font-size: 25px;
+  text-decoration: none;
+}
+
+.add-product:hover{
+  color: #388E3C;
   text-decoration: underline;
 }
