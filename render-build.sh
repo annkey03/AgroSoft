@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Instalar dependencias
-pip install -r requirements.txt
+poetry install --no-dev
 
 # Ejecutar migraciones
-python manage.py migrate
+poetry run python manage.py migrate
 
 # Recoger archivos estáticos
-python manage.py collectstatic --noinput
+poetry run python manage.py collectstatic --noinput
