@@ -87,6 +87,7 @@ DATABASES = {
         default='postgresql://postgres:vivis123@localhost:5432/produccion',
         conn_max_age=600,
         conn_health_checks=True,
+        engine='django.db.backends.postgresql',
     )
 }
 
