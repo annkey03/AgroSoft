@@ -20,12 +20,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6$85j4!0+24#x6s1$7-axl^u_td7c+en)$+0&$d)$im-!gh3p5'
+import os
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-6$85j4!0+24#x6s1$7-axl^u_td7c+en)$+0&$d)$im-!gh3p5')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -78,15 +79,14 @@ WSGI_APPLICATION = 'produccion.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'produccion',
-        'USER': 'postgres',
-        'PASSWORD': 'vivis123',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default='postgresql://postgres:vivis123@localhost:5432/produccion',
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 
