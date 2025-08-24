@@ -1,1 +1,1 @@
-web: poetry run gunicorn produccion.wsgi:application --bind 0.0.0.0:8000
+web: poetry run gunicorn produccion.wsgi:application --bind 0.0.0.0:$PORT
