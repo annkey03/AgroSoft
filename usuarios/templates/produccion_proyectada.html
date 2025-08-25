@@ -1,0 +1,113 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Producción Proyectada - AgroSoft{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h2 mb-4">Producción Proyectada</h1>
+        </div>
+    </div>
+
+    <!-- Resumen de proyecciones -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Proyectado</h5>
+                    <h2 class="card-text">${{ total_proyectado|floatformat:2 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Cultivos Activos</h5>
+                    <h2 class="card-text">{{ proyecciones|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Rendimiento Promedio</h5>
+                    <h2 class="card-text">90%</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de proyecciones -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Detalle de Proyecciones</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Agricultor</th>
+                                    <th>Cultivo</th>
+                                    <th>Cantidad (kg)</th>
+                                    <th>Precio Estimado ($/kg)</th>
+                                    <th>Ingreso Proyectado ($)</th>
+                                    <th>Rendimiento Estimado (kg)</th>
+                                    <th>Fecha Cosecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for proyeccion in proyecciones %}
+                                <tr>
+                                    <td>{{ proyeccion.cultivo.agricultor.username }}</td>
+                                    <td>{{ proyeccion.cultivo.cultivo_deseado }}</td>
+                                    <td>{{ proyeccion.cultivo.cantidad|floatformat:2 }}</td>
+                                    <td>${{ proyeccion.cultivo.precio_estimado|floatformat:2 }}</td>
+                                    <td>${{ proyeccion.ingreso_proyectado|floatformat:2 }}</td>
+                                    <td>{{ proyeccion.rendimiento_estimado|floatformat:2 }}</td>
+                                    <td>{{ proyeccion.cultivo.fecha_cosecha|date:"d/m/Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No hay cultivos activos para proyectar</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nota sobre la proyección -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Información Importante</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Nota:</strong> Esta es la primera parte (7/13) de la implementación de producción proyectada. 
+                    Los cálculos actuales incluyen:</p>
+                    <ul>
+                        <li>Ingreso proyectado = Cantidad × Precio estimado</li>
+                        <li>Rendimiento estimado = Cantidad × 90% (factor de seguridad)</li>
+                        <li>Los precios son estimados y pueden variar según el mercado</li>
+                    </ul>
+                    <p>Las próximas actualizaciones incluirán:</p>
+                    <ul>
+                        <li>Análisis de tendencias de precios</li>
+                        <li>Factores climáticos en la proyección</li>
+                        <li>Comparación con períodos anteriores</li>
+                        <li>Alertas de riesgo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
