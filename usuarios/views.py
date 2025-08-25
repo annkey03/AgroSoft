@@ -3,6 +3,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
 from django.http import JsonResponse
 from django.db import models
 from .forms import AgricultorRegistroForm, SolicitudRecomendacionForm
@@ -19,6 +20,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.urls import reverse
+from django.db.models import Count, Sum
 
 def registro(request):
     """Vista para el registro de nuevos agricultores"""
@@ -158,6 +160,166 @@ def home(request):
         'clima_actual': obtener_clima_sabana_occidente()
     }
     return render(request, 'home.html', context)
+
+def es_admin(user):
+    """Verifica si el usuario es administrador"""
+    return user.tipo == 'admin'
+
+@login_required
+def admin_dashboard(request):
+    if request.user.tipo == 'admin':
+        # Si es administrador, mostrar estadísticas generales
+        total_usuarios = Usuario.objects.count()
+        total_solicitudes = SolicitudRecomendacion.objects.count()
+        solicitudes_pendientes = SolicitudRecomendacion.objects.filter(estado='pendiente').count()
+        solicitudes_recientes = request.user.solicitudrecomendacion_set.all()[:5]
+        
+        context = {
+            'total_usuarios': total_usuarios,
+            'total_solicitudes': total_solicitudes,
+            'solicitudes_pendientes': solicitudes_pendientes,
+            'solicitudes_recientes': solicitudes_recientes,
+            'clima_actual': obtener_clima_sabana_occidente()
+        }
+        return render(request, 'admin_dashboard.html', context)
+    
+@login_required
+@user_passes_test(es_admin)
+def gestionar_usuarios(request):
+    """Vista para gestionar usuarios del sistema"""
+    usuarios = Usuario.objects.all().order_by('-date_joined')
+    
+    if request.method == 'POST':
+        if 'crear_usuario' in request.POST:
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            tipo = request.POST.get('tipo')
+            
+            if Usuario.objects.filter(username=username).exists():
+                messages.error(request, 'El nombre de usuario ya existe.')
+            else:
+                usuario = Usuario.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password,
+                    tipo=tipo
+                )
+                messages.success(request, f'Usuario {username} creado exitosamente.')
+                
+        elif 'eliminar_usuario' in request.POST:
+            usuario_id = request.POST.get('usuario_id')
+            try:
+                usuario = Usuario.objects.get(id=usuario_id)
+                if usuario != request.user:
+                    usuario.delete()
+                    messages.success(request, 'Usuario eliminado exitosamente.')
+                else:
+                    messages.error(request, 'No puedes eliminar tu propio usuario.')
+            except Usuario.DoesNotExist:
+                messages.error(request, 'Usuario no encontrado.')
+    
+    context = {
+        'usuarios': usuarios
+    }
+    return render(request, 'gestionar_usuarios.html', context)
+
+# HU8 - Reporte de cultivos
+@login_required
+@user_passes_test(es_admin)
+def reporte_cultivos(request):
+    """Vista para generar reportes de cultivos"""
+    cultivos = SolicitudRecomendacion.objects.all()
+    
+    # Filtros
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+    agricultor = request.GET.get('agricultor')
+    cultivo = request.GET.get('cultivo')
+    
+    if fecha_inicio:
+        cultivos = cultivos.filter(fecha__gte=fecha_inicio)
+    if fecha_fin:
+        cultivos = cultivos.filter(fecha__lte=fecha_fin)
+    if agricultor:
+        cultivos = cultivos.filter(agricultor__username__icontains=agricultor)
+    if cultivo:
+        cultivos = cultivos.filter(cultivo_deseado__icontains=cultivo)
+    
+    # Estadísticas
+    total_cultivos = cultivos.count()
+    total_produccion = cultivos.aggregate(
+        total=Sum('cantidad')
+    )['total'] or 0
+    
+    context = {
+        'cultivos': cultivos,
+        'total_cultivos': total_cultivos,
+        'total_produccion': total_produccion,
+    }
+    return render(request, 'reporte_cultivos.html', context)
+
+# HU5 - Reportes gráficos
+@login_required
+def reportes_graficos(request):
+    """Vista para mostrar reportes gráficos"""
+    # Datos para gráficos
+    cultivos_data = SolicitudRecomendacion.objects.values('cultivo_deseado').annotate(
+        total=Count('id'),
+        cantidad_total=Sum('cantidad')
+    ).order_by('-total')[:10]
+    
+    # Datos mensuales
+    meses = []
+    produccion_mensual = []
+    for i in range(12):
+        mes = datetime.now().replace(month=i+1, day=1)
+        meses.append(mes.strftime('%B'))
+        produccion = SolicitudRecomendacion.objects.filter(
+            fecha__month=i+1,
+            fecha__year=datetime.now().year
+        ).aggregate(total=Sum('cantidad'))['total'] or 0
+        produccion_mensual.append(float(produccion))
+    
+    # Viabilidad de cultivos
+    viabilidad_data = SolicitudRecomendacion.objects.values('viabilidad').annotate(
+        total=Count('id')
+    )
+    
+    context = {
+        'cultivos_data': list(cultivos_data),
+        'meses': meses,
+        'produccion_mensual': produccion_mensual,
+        'viabilidad_data': list(viabilidad_data),
+    }
+    return render(request, 'reportes_graficos.html', context)
+
+# HU6 - Producción proyectada
+@login_required
+@user_passes_test(es_admin)
+def produccion_proyectada(request):
+    """Vista para calcular producción proyectada"""
+    # Primera parte: cálculos básicos
+    cultivos_activos = SolicitudRecomendacion.objects.filter(
+        estado='procesada'
+    ).select_related('agricultor')
+    
+    # Proyecciones por cultivo
+    proyecciones = []
+    for cultivo in cultivos_activos:
+        if cultivo.cantidad and cultivo.precio_estimado:
+            ingreso_proyectado = float(cultivo.cantidad) * float(cultivo.precio_estimado)
+            proyecciones.append({
+                'cultivo': cultivo,
+                'ingreso_proyectado': ingreso_proyectado,
+                'rendimiento_estimado': cultivo.cantidad * 0.9  # 90% de rendimiento estimado
+            })
+    
+    context = {
+        'proyecciones': proyecciones,
+        'total_proyectado': sum(p['ingreso_proyectado'] for p in proyecciones)
+    }
+    return render(request, 'produccion_proyectada.html', context)
 
 
 def obtener_clima_sabana_occidente():
