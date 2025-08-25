@@ -13,7 +13,7 @@ setup(
         "whitenoise==6.7.0",
         "dj-database-url==2.1.0",
         "psycopg2-binary==2.9.9",
-        "Pillow==10.2.0",
+        "Pillow==9.5.0",
         "python-decouple==3.8",
         "requests==2.31.0",
         "Werkzeug==3.0.1",
