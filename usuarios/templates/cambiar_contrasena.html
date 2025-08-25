@@ -4,13 +4,13 @@
 <head>
 
     <title>AgroSoft</title>
-    <link rel="icon" type="logo/png" href="{% static 'img/logo.png' %}">
+    <link rel="icon" type="logo/png" href="{% static 'img/logo.svg' %}">
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
     <div class="contenedor">
         <div class="login-box">
-            <h4>Cambiar Contraseña</h4>
+            <h3>Cambiar Contraseña</h3>
             {% if messages %}
                 {% for message in messages %}
                     <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
@@ -24,9 +24,9 @@
                 <div class="form-group">
                     <input placeholder="Confirmar Contraseña" type="password" name="confirmar_contrasena" id="confirmar_contrasena" required minlength="8">
                 </div>
-                <button type="submit" class="button-send">Cambiar Contraseña</button>
+                <button type="submit" class="btn-send">Cambiar Contraseña</button>
             </form>
-            <p class="description">¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar Sesión</a></p>
+            <p class="descripcion">¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar Sesión</a></p>
         </div>
     </div>
 </body>

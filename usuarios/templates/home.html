@@ -2,34 +2,23 @@
 <html lang="es">
     {% load static %}
 <head>
-    <link rel="icon" type="logo/png" href="{% static 'img/logo.png' %}">
+    <link rel="icon" type="logo/png" href="{% static 'img/logo.svg' %}">
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <title>AgroSoft</title>
 </head>
 <body>
     <div class="contenedor-home">
         <div class="navbar">
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}"> <img class="logo" src="{% static 'img/logo.svg' %}"> Cerrar sesión</a>
+            {% endif %}
             <div class="navbar-left">
-                {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}">Cerrar sesión</a>
-                {% endif %}
-            </div>
-            <div class="navbar-right">
                 <a href="{% url 'home' %}">Home</a>
                 <a href="{% url 'productos' %}">Productos</a>
             </div>
         </div>
 
         <div class="sub-navbar">
-            <p class="zones">Zona De Cultivo Principal
-                <select class="combo-box" id="zonas" name="zonas">
-                <option>...</option>
-                <option value="madrid">Madrid</option>
-                <option value="facatativa">Facatativa</option>
-                <option value="funza">Funza</option>
-                <option value="mosquera">Mosquera</option>
-            </select>
-            </p>
             <a class="btn-create" href="{% url 'solicitar_recomendacion' %}">+Cultivar</a>
         </div>
 

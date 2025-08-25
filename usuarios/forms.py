@@ -17,7 +17,7 @@ class SolicitudRecomendacionForm(forms.ModelForm):
     municipio = forms.CharField(
         max_length=100,
         label='Municipio de siembra',
-        widget=forms.TextInput(attrs={'placeholder': 'Ej: Chía, Cajicá, Zipaquirá'})
+        widget=forms.TextInput(attrs={'placeholder': 'Ej: Madrid, Facatativa, Mosquera'})
     )
     fecha_cultivo = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}),

@@ -3,13 +3,13 @@
     {% load static %}
 <head>
     <title>AgroSoft</title>
-    <link rel="icon" type="logo/png" href="{% static 'img/logo.png' %}">
+    <link rel="icon" type="logo/png" href="{% static 'img/logo.svg' %}">
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
     <div class="contenedor">
         <div class="login-box">
-                    <h2>Recuperar Contraseña</h2>
+                    <h3>Recuperar Contraseña</h3>
         {% if messages %}
             {% for message in messages %}
                 <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
@@ -18,12 +18,11 @@
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
-                <label for="username">Usuario o Email:</label>
-                <input type="text" name="username" id="username" required>
+                <input placeholder="Correo Electronico" type="text" name="username" id="username" required>
             </div>
-            <button type="submit" class="btn">Enviar Solicitud</button>
+            <button type="submit" class="btn-send">Enviar Solicitud</button>
         </form>
-        <p>¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar Sesión</a></p>
+        <p class="descripcion">¿Ya tienes cuenta? <a class="btn-back" href="{% url 'login' %}">Iniciar Sesión</a></p>
     </div>
 </body>
 </html>
