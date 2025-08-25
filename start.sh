@@ -5,9 +5,9 @@
 if [ -n "$PORT" ]; then
     # Entorno de producción - usar Gunicorn
     echo "Iniciando aplicación con Gunicorn en puerto $PORT"
-    poetry run gunicorn produccion.wsgi:application --bind 0.0.0.0:$PORT
+    gunicorn produccion.wsgi:application --bind 0.0.0.0:$PORT
 else
     # Entorno de desarrollo - usar runserver
     echo "Iniciando aplicación con runserver"
-    poetry run python manage.py runserver 0.0.0.0:8000
+    python manage.py runserver 0.0.0.0:8000
 fi
