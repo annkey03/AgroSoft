@@ -83,6 +83,7 @@ WSGI_APPLICATION = 'produccion.wsgi.application'
 import dj_database_url
 
 DATABASES = {
+
     'default': dj_database_url.config(
         default='postgresql://postgres:vivis123@localhost:5432/produccion',
         conn_max_age=600,
@@ -138,6 +139,15 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
+
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'karin30arenales@gmail.com'  # Cambiar por tu correo
+EMAIL_HOST_PASSWORD = 'wuxt vupc ojwo cfys'    # Cambiar por tu contraseña de app
+DEFAULT_FROM_EMAIL = 'tu-correo@gmail.com'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
