@@ -1,0 +1,310 @@
+body{
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  color: #000;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 2rem;
+  background-color: white;
+}
+
+/*Estilos del Login*/
+
+.contenedor{
+  margin: 0;
+  padding: 0;
+  width: 100vmax;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  background: linear-gradient(135deg, #776AE3 0%, #C76AE3 100%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.welcome{
+  color: white;
+  font-size: 40px;
+}
+
+.login-box {
+  background-color: rgba(0, 0, 0, 0.502);
+  padding: 30px;
+  border-radius: 15px;
+  color: white;
+  text-align: center;
+  width: 300px;
+}
+
+.error{
+  font-size: 15px;
+  color: white;
+}
+
+.errorlist{
+  font-size: 15px;
+  color: white;
+  margin: 5px;
+}
+
+.messages.error{
+  font-size: 15px;
+  color: white;
+}
+
+.messages.success{
+  font-size: 15px;
+  color: white;
+}
+
+.logo{
+  height: 30px;
+  width: 60px;
+}
+
+.form-group input{
+  background-color: white;
+  color: black;
+  width: 300px;
+  height: 40px;
+  border: none;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.buttons{
+  display: flex;
+  flex-direction: column; 
+  gap: 10px; 
+  align-items: center; 
+}
+
+.button-login{
+  color: white;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  border-radius: 10px;
+  font-size: 25px;
+  border: none;
+  width: 300px;
+  cursor: pointer;
+  height: 40px;
+  text-decoration: none;
+}
+
+.button-login:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.button-register{
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.button-register:hover{
+  text-decoration: underline;
+  color: #4CAF50;
+  transform: translateY(-2px);
+}
+
+.button-forget{
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.button-forget:hover{
+  text-decoration: underline;
+  transform: translateY(-2px);
+  color: #4CAF50;
+}
+
+.btn-send{
+  color: white;
+  background: linear-gradient(135deg, #4CAF50, #45a049);;
+  border: none;
+  border-radius: 10px;
+  font-size: 25px;
+  width: 300px;
+  cursor: pointer;
+  height: 40px;
+}
+
+.btn-send:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.descripcion{
+  font-size: 15px;
+}
+
+.descripcion a{
+  text-decoration: none;
+  color: #4CAF50;
+}
+
+.descripcion a:hover{
+  transform: translateY(-2px);
+  text-decoration: underline;
+}
+
+.message-forget{
+  color: white;
+  font-size: 15px;
+}
+
+/*Estilos para Home*/
+
+.contenedor-home{
+  font-family: Arial, sans-serif; 
+  margin: 0; 
+  background: linear-gradient(135deg, #ffffff, #dedede);
+  min-height: 100vh;
+  width: 100vmax;
+}
+
+.navbar{
+  position: relative;
+  background: linear-gradient(135deg, #003C1F, #00A253);
+  padding: 15px 40px;
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  justify-content: space-between;
+}
+
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+  margin-right: 20px;
+  padding: 5px;
+  font-weight: bold;
+}
+
+.navbar a:hover{
+  transform: translateY(-2px);
+  text-decoration: underline;
+}
+
+.sub-navbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 15px;
+}
+
+.btn-create{
+  text-decoration: none;
+  font-size: 25px;
+  color: black;
+  margin-right: 30px;
+  margin-top: 20px;
+}
+
+.btn-create:hover{
+  color: #388E3C;
+  text-decoration: underline;
+  transform: translateY(-2px);
+}
+
+.container { 
+  max-width: 1100px; 
+  margin: 30px auto; 
+  background-color: #e4ffe1; 
+  padding: 10px;
+  border-radius: 8px; 
+  border-left: 5px solid #4CAF50;
+}
+
+.container h4{
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  color: #003C1F;
+}
+
+.container li{
+  font-size: 1.1rem;
+  color: #1b5e20;
+}
+
+.containers{
+  display: flex;
+}
+
+.container-graphics{
+  width: 500px; 
+  margin: 40px auto; 
+  background: #fff; 
+  padding: 30px; 
+  border-radius: 8px; 
+}
+
+.container-weather{
+  width: 500px; 
+  margin: 40px auto; 
+  background: #fff; 
+  padding: 30px; 
+  border-radius: 8px; 
+}
+
+/*Estilos para Productos*/
+
+.products{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.container-products{
+  width: 500px; 
+  margin-left: 20px;
+  padding-left: 20px;
+  background-color: #ffffff; 
+  border-radius: 20px 0px 20px 0px; 
+  border-left: 5px solid #4CAF50;
+}
+
+.container-products p{
+  font-size: 25px;
+  color: black;
+  margin: 10px;
+}
+
+.btn-product{
+  background: transparent;
+  color: gray; 
+  text-decoration: none; 
+  border-radius: 5px; 
+  font-size: 20px;
+  margin: 10px;
+}
+
+.btn-product:hover{
+  text-decoration: underline;
+}
+
+.add-product{
+  color: black;
+  padding: 10px;
+  font-size: 25px;
+  text-decoration: none;
+}
+
+.add-product:hover{
+  color: #388E3C;
+  text-decoration: underline;
+  transform: translateY(-2px);
+}
