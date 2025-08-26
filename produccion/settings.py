@@ -81,13 +81,10 @@ WSGI_APPLICATION = 'produccion.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 import dj_database_url
-
-DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv("DATABASE_URL", "postgresql://postgres:1234567890@localhost:5432/produccion"),
         conn_max_age=600,
         conn_health_checks=True,
-    )
 }
 
 

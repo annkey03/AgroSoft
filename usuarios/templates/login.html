@@ -3,13 +3,14 @@
 {% load static %}
 <head>
     <title>AgroSoft</title>
-    <link rel="icon" type="logo/png" href="{% static 'img/logo.png' %}">
+    <link rel="icon" type="logo/png" href="{% static 'img/logo.svg' %}">
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
     <div class="contenedor">
+        <p class="welcome"> <img class="logo" src="{% static 'img/logo.svg' %}"> Bienvenido a AgroSoft!</p>
         <div class="login-box">
-            <h4> <img class="logo" src="{% static 'img/logo.png' %}">Iniciar sesión</h4>
+            <h4>Iniciar sesión</h4>
             {% if error %}
                 <div class="error">{{ error }}</div>
             {% endif %}

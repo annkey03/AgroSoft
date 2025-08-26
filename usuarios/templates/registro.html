@@ -3,13 +3,13 @@
 {% load static %}
 <head>
     <title>AgroSoft</title>
-    <link rel="icon" type="logo/png" href="{% static 'img/logo.png' %}">
+    <link rel="icon" type="logo/png" href="{% static 'img/logo.svg' %}">
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
     <div class="contenedor">
         <div class="login-box">
-            <h4><img class="logo" src="{% static 'img/logo.png' %}">Registro</h4>
+            <h4>Registro</h4>
             <form method="post">
                 {% csrf_token %}
                 {% for field in form %}

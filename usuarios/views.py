@@ -1066,7 +1066,7 @@ def api_recomendacion(request):
             data = json.loads(request.body)
             cultivo = data.get('cultivo', '')
             clima = obtener_clima_sabana_occidente()
-            recomendacion = generar_recomendacion(cultivo, clima)
+            recomendacion = generar_recomendaciones_completas(cultivo, clima)
             
             return JsonResponse({
                 'cultivo': cultivo,
