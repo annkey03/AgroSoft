@@ -51,12 +51,12 @@ body{
   margin: 5px;
 }
 
-messages.error{
+.messages.error{
   font-size: 15px;
   color: white;
 }
 
-messages.success{
+.messages.success{
   font-size: 15px;
   color: white;
 }
@@ -158,6 +158,11 @@ messages.success{
 .descripcion a:hover{
   transform: translateY(-2px);
   text-decoration: underline;
+}
+
+.message-forget{
+  color: white;
+  font-size: 15px;
 }
 
 /*Estilos para Home*/
