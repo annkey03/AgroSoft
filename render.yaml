@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: produccion-django
+    env: python
+    pythonVersion: "3.11.9"
+    buildCommand: pip install -r requirements.txt
+    startCommand: ./start.sh
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: produccion-db
+          property: connectionString
+    plan: free
+
+databases:
+  - name: produccion-db
+    plan: free
+    databaseName: produccion
+    user: postgres

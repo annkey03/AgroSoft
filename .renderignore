@@ -1,0 +1,9 @@
+# Ignorar archivos de Poetry para evitar conflictos
+pyproject.toml
+poetry.lock
+
+# Ignorar archivos de desarrollo
+.env
+*.pyc
+__pycache__/
+*.sqlite3
