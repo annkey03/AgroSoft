@@ -4,13 +4,169 @@
 <head>
 
     <title>AgroSoft</title>
-    <link rel="icon" type="logo/png" href="{% static 'img/logo.png' %}">
+    <link rel="icon" type="logo/png" href="{% static 'img/logo.svg' %}">
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        .contenedor{
+  margin: 0;
+  padding: 0;
+  width: 100vmax;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  background: linear-gradient(135deg, #776AE3 0%, #C76AE3 100%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.welcome{
+  color: white;
+  font-size: 40px;
+}
+
+.login-box {
+  background-color: rgba(0, 0, 0, 0.502);
+  padding: 30px;
+  border-radius: 15px;
+  color: white;
+  text-align: center;
+  width: 300px;
+}
+
+.error{
+  font-size: 15px;
+  color: white;
+}
+
+.errorlist{
+  font-size: 15px;
+  color: white;
+  margin: 5px;
+}
+
+.messages.error{
+  font-size: 15px;
+  color: white;
+}
+
+.messages.success{
+  font-size: 15px;
+  color: white;
+}
+
+.logo{
+  height: 30px;
+  width: 60px;
+}
+
+.form-group input{
+  background-color: white;
+  color: black;
+  width: 300px;
+  height: 40px;
+  border: none;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.buttons{
+  display: flex;
+  flex-direction: column; 
+  gap: 10px; 
+  align-items: center; 
+}
+
+.button-login{
+  color: white;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  border-radius: 10px;
+  font-size: 25px;
+  border: none;
+  width: 300px;
+  cursor: pointer;
+  height: 40px;
+  text-decoration: none;
+}
+
+.button-login:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.button-register{
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.button-register:hover{
+  text-decoration: underline;
+  color: #4CAF50;
+  transform: translateY(-2px);
+}
+
+.button-forget{
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.button-forget:hover{
+  text-decoration: underline;
+  transform: translateY(-2px);
+  color: #4CAF50;
+}
+
+.btn-send{
+  color: white;
+  background: linear-gradient(135deg, #4CAF50, #45a049);;
+  border: none;
+  border-radius: 10px;
+  font-size: 25px;
+  width: 300px;
+  cursor: pointer;
+  height: 40px;
+}
+
+.btn-send:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.descripcion{
+  font-size: 15px;
+}
+
+.descripcion a{
+  text-decoration: none;
+  color: #4CAF50;
+}
+
+.descripcion a:hover{
+  transform: translateY(-2px);
+  text-decoration: underline;
+}
+
+.message-forget{
+  color: white;
+  font-size: 15px;
+}
+    </style>
 </head>
 <body>
     <div class="contenedor">
         <div class="login-box">
-            <h4>Cambiar Contraseña</h4>
+            <h3>Cambiar Contraseña</h3>
             {% if messages %}
                 {% for message in messages %}
                     <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
@@ -24,9 +180,9 @@
                 <div class="form-group">
                     <input placeholder="Confirmar Contraseña" type="password" name="confirmar_contrasena" id="confirmar_contrasena" required minlength="8">
                 </div>
-                <button type="submit" class="button-send">Cambiar Contraseña</button>
+                <button type="submit" class="btn-send">Cambiar Contraseña</button>
             </form>
-            <p class="description">¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar Sesión</a></p>
+            <p class="descripcion">¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar Sesión</a></p>
         </div>
     </div>
 </body>
