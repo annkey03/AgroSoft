@@ -14,10 +14,31 @@ class AgricultorRegistroForm(UserCreationForm):
            self.fields['password2'].widget.attrs['placeholder'] = 'Confirmar contraseña'
 
 class SolicitudRecomendacionForm(forms.ModelForm):
-    municipio = forms.CharField(
-        max_length=100,
+    MUNICIPIOS_SABANA_OCCIDENTE = [
+        ('', 'Seleccione un municipio'),
+        ('Chía', 'Chía'),
+        ('Cajicá', 'Cajicá'),
+        ('Zipaquirá', 'Zipaquirá'),
+        ('Facatativá', 'Facatativá'),
+        ('Soacha', 'Soacha'),
+        ('Madrid', 'Madrid'),
+        ('Mosquera', 'Mosquera'),
+        ('Funza', 'Funza'),
+        ('Bojacá', 'Bojacá'),
+        ('Cota', 'Cota'),
+        ('El Rosal', 'El Rosal'),
+        ('Subachoque', 'Subachoque'),
+        ('Tabio', 'Tabio'),
+        ('Tenjo', 'Tenjo'),
+        ('Sibaté', 'Sibaté'),
+        ('Sopó', 'Sopó'),
+        ('Tocancipá', 'Tocancipá'),
+    ]
+    
+    municipio = forms.ChoiceField(
+        choices=MUNICIPIOS_SABANA_OCCIDENTE,
         label='Municipio de siembra',
-        widget=forms.TextInput(attrs={'placeholder': 'Ej: Madrid, Facatativa, Mosquera'})
+        widget=forms.Select(attrs={'class': 'form-select'})
     )
     fecha_cultivo = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}),

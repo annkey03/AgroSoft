@@ -1,0 +1,167 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Reportes Gráficos - AgroSoft{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h2 mb-4">Reportes Gráficos</h1>
+        </div>
+    </div>
+
+    <!-- Gráficos de producción -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Producción por Cultivo</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="produccionChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Ingresos por Período</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="ingresosChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico de viabilidad -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Viabilidad de Cultivos</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="viabilidadChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Gráfico de producción por cultivo (gráfico de puntos)
+const ctx = document.getElementById('produccionChart').getContext('2d');
+const produccionChart = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+        datasets: [{
+            label: 'Producción por Cultivo',
+            data: [
+                {% for cultivo in cultivos_data %}
+                {x: {{ forloop.counter0 }}, y: {{ cultivo.cantidad_total|default:0 }}}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            backgroundColor: '#FF6384',
+            borderColor: '#FF6384',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                type: 'category',
+                labels: [
+                    {% for cultivo in cultivos_data %}
+                    '{{ cultivo.cultivo_deseado }}'{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                ]
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Cantidad Total'
+                }
+            }
+        }
+    }
+});
+
+// Gráfico de ingresos por período (gráfico de barras)
+const ctx2 = document.getElementById('ingresosChart').getContext('2d');
+const ingresosChart = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+        labels: [
+            {% for mes in meses %}
+            '{{ mes }}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Producción Mensual',
+            data: [
+                {% for produccion in produccion_mensual %}
+                {{ produccion }}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Producción Total'
+                }
+            }
+        }
+    }
+});
+
+// Gráfico de viabilidad (gráfico de barras)
+const ctx3 = document.getElementById('viabilidadChart').getContext('2d');
+const viabilidadChart = new Chart(ctx3, {
+    type: 'bar',
+    data: {
+        labels: [
+            {% for viabilidad in viabilidad_data %}
+            '{{ viabilidad.viabilidad }}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Cantidad por Viabilidad',
+            data: [
+                {% for viabilidad in viabilidad_data %}
+                {{ viabilidad.total }}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            backgroundColor: '#36A2EB',
+            borderColor: '#36A2EB',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Cantidad'
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

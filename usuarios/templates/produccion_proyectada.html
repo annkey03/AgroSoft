@@ -1,0 +1,187 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Producción Proyectada - AgroSoft{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h2 mb-4">Producción Proyectada</h1>
+        </div>
+    </div>
+
+    <!-- Resumen de proyecciones -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Proyectado</h5>
+                    <h2 class="card-text">${{ total_proyectado|floatformat:2 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Cultivos Activos</h5>
+                    <h2 class="card-text">{{ total_cultivos }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Rendimiento Promedio</h5>
+                    <h2 class="card-text">{{ rendimiento_promedio|floatformat:2 }} kg</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico de puntos -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Gráfico de Producción Proyectada</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="graficoProduccion" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de proyecciones -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Detalle de Proyecciones</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Agricultor</th>
+                                    <th>Cultivo</th>
+                                    <th>Cantidad (kg)</th>
+                                    <th>Precio Estimado ($/kg)</th>
+                                    <th>Ingreso Proyectado ($)</th>
+                                    <th>Rendimiento Estimado (kg)</th>
+                                    <th>Fecha Cosecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for proyeccion in proyecciones %}
+                                <tr>
+                                    <td>{{ proyeccion.cultivo.agricultor.username }}</td>
+                                    <td>{{ proyeccion.cultivo.cultivo_deseado }}</td>
+                                    <td>{{ proyeccion.cultivo.cantidad|floatformat:2 }}</td>
+                                    <td>${{ proyeccion.cultivo.precio_estimado|floatformat:2 }}</td>
+                                    <td>${{ proyeccion.ingreso_proyectado|floatformat:2 }}</td>
+                                    <td>{{ proyeccion.rendimiento_estimado|floatformat:2 }}</td>
+                                    <td>{{ proyeccion.cultivo.fecha_cosecha|date:"d/m/Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No hay cultivos activos para proyectar</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nota sobre la proyección -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Información Importante</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Nota:</strong> Los cálculos actuales incluyen:</p>
+                    <ul>
+                        <li>Ingreso proyectado = Cantidad × Precio estimado</li>
+                        <li>Rendimiento estimado = Cantidad × 90% (factor de seguridad)</li>
+                        <li>Los precios son estimados y pueden variar según el mercado</li>
+                        <li>El gráfico muestra la relación entre cantidad e ingreso proyectado por cultivo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para el gráfico de puntos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('graficoProduccion').getContext('2d');
+    
+    // Convertir datos de Django a formato JavaScript
+    const labels = JSON.parse('{{ datos_grafico.labels|escapejs }}');
+    const ingresos = JSON.parse('{{ datos_grafico.ingresos|escapejs }}');
+    const colores = JSON.parse('{{ datos_grafico.colores|escapejs }}');
+    const cantidades = JSON.parse('{{ datos_grafico.cantidades|escapejs }}');
+    
+    const datos = {
+        labels: labels,
+        datasets: [{
+            label: 'Producción Proyectada',
+            data: ingresos,
+            backgroundColor: colores,
+            borderColor: colores,
+            borderWidth: 1,
+            pointRadius: 8,
+            pointHoverRadius: 12
+        }]
+    };
+
+    const config = {
+        type: 'scatter',
+        data: datos,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.raw;
+                            const cantidad = cantidades[context.dataIndex];
+                            return `${label}: $${value.toLocaleString()} (${cantidad} kg)`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Cultivos'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Ingreso Proyectado ($)'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    };
+
+    new Chart(ctx, config);
+});
+</script>
+{% endblock %}
