@@ -5,6 +5,8 @@
 if [ -n "$PORT" ]; then
     # Entorno de producción - usar Gunicorn
     echo "Iniciando aplicación con Gunicorn en puerto $PORT"
+    # Aplicar migraciones
+    python manage.py migrate
     gunicorn produccion.wsgi:application --bind 0.0.0.0:$PORT
 else
     # Entorno de desarrollo - usar runserver
