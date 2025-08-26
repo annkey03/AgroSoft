@@ -36,6 +36,7 @@ class SolicitudRecomendacion(models.Model):
     fecha_cosecha = models.DateField(blank=True, null=True)
     dias_cultivo = models.IntegerField(blank=True, null=True)
     viabilidad = models.CharField(max_length=50, default='pendiente')
+    municipio = models.CharField(max_length=100, blank=True, null=True)  # Agregar campo municipio
     estado = models.CharField(max_length=20, default='pendiente')
     clima_recomendacion = models.TextField(blank=True, null=True)
     

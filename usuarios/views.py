@@ -1,5 +1,3 @@
-
-
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -166,19 +164,30 @@ def es_admin(user):
     return user.tipo == 'admin'
 
 @login_required
+@user_passes_test(es_admin)
 def admin_dashboard(request):
     if request.user.tipo == 'admin':
         # Si es administrador, mostrar estadísticas generales
         total_usuarios = Usuario.objects.count()
+        total_agricultores = Usuario.objects.filter(tipo='agricultor').count()
         total_solicitudes = SolicitudRecomendacion.objects.count()
         solicitudes_pendientes = SolicitudRecomendacion.objects.filter(estado='pendiente').count()
-        solicitudes_recientes = request.user.solicitudrecomendacion_set.all()[:5]
+        
+        # Obtener las últimas 5 solicitudes (actividad reciente)
+        ultimas_solicitudes = SolicitudRecomendacion.objects.select_related('agricultor').order_by('-fecha')[:5]
+        
+        # Obtener cultivos populares
+        cultivos_populares = SolicitudRecomendacion.objects.values('cultivo_deseado').annotate(
+            total=Count('id')
+        ).order_by('-total')[:5]  # Obtener los 5 cultivos más populares
         
         context = {
             'total_usuarios': total_usuarios,
+            'total_agricultores': total_agricultores,
             'total_solicitudes': total_solicitudes,
             'solicitudes_pendientes': solicitudes_pendientes,
-            'solicitudes_recientes': solicitudes_recientes,
+            'ultimas_solicitudes': ultimas_solicitudes,
+            'cultivos_populares': cultivos_populares,
             'clima_actual': obtener_clima_sabana_occidente()
         }
         return render(request, 'admin_dashboard.html', context)
@@ -261,6 +270,7 @@ def reporte_cultivos(request):
 
 # HU5 - Reportes gráficos
 @login_required
+@user_passes_test(es_admin)
 def reportes_graficos(request):
     """Vista para mostrar reportes gráficos"""
     # Datos para gráficos
@@ -298,26 +308,53 @@ def reportes_graficos(request):
 @login_required
 @user_passes_test(es_admin)
 def produccion_proyectada(request):
-    """Vista para calcular producción proyectada"""
-    # Primera parte: cálculos básicos
+    """Vista para calcular producción proyectada con gráfico de puntos"""
+    # Obtener cultivos activos procesados
     cultivos_activos = SolicitudRecomendacion.objects.filter(
         estado='procesada'
     ).select_related('agricultor')
     
-    # Proyecciones por cultivo
+    # Proyecciones por cultivo para la tabla
     proyecciones = []
-    for cultivo in cultivos_activos:
+    # Datos para el gráfico de puntos
+    datos_grafico = {
+        'labels': [],
+        'ingresos': [],
+        'cantidades': [],
+        'colores': []
+    }
+    
+    # Colores para diferentes cultivos
+    colores = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8AC926', '#1982C4', '#6A4C93']
+    
+    for i, cultivo in enumerate(cultivos_activos):
         if cultivo.cantidad and cultivo.precio_estimado:
             ingreso_proyectado = float(cultivo.cantidad) * float(cultivo.precio_estimado)
+            rendimiento_estimado = float(cultivo.cantidad) * 0.9
+            
             proyecciones.append({
                 'cultivo': cultivo,
                 'ingreso_proyectado': ingreso_proyectado,
-                'rendimiento_estimado': cultivo.cantidad * 0.9  # 90% de rendimiento estimado
+                'rendimiento_estimado': rendimiento_estimado
             })
+            
+            # Datos para el gráfico de puntos
+            datos_grafico['labels'].append(cultivo.cultivo_deseado or 'Sin nombre')
+            datos_grafico['ingresos'].append(float(ingreso_proyectado))
+            datos_grafico['cantidades'].append(float(cultivo.cantidad))
+            datos_grafico['colores'].append(colores[i % len(colores)])
+    
+    # Calcular estadísticas
+    total_proyectado = sum(p['ingreso_proyectado'] for p in proyecciones)
+    total_cultivos = len(proyecciones)
+    rendimiento_promedio = sum(p['rendimiento_estimado'] for p in proyecciones) / total_cultivos if total_cultivos > 0 else 0
     
     context = {
         'proyecciones': proyecciones,
-        'total_proyectado': sum(p['ingreso_proyectado'] for p in proyecciones)
+        'total_proyectado': total_proyectado,
+        'total_cultivos': total_cultivos,
+        'rendimiento_promedio': rendimiento_promedio,
+        'datos_grafico': datos_grafico
     }
     return render(request, 'produccion_proyectada.html', context)
 
