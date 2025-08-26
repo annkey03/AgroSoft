@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroSoft - Recomendaciones de Cultivos</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; color: #2c5530; margin-bottom: 30px; }
+        .form-section { background: #e8f5e8; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #2c5530; }
+        select, input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 200px; }
+        button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #45a049; }
+        .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+        .stat-card { background: #f0f8f0; padding: 15px; border-radius: 5px; text-align: center; min-width: 150px; }
+        .error { color: red; background: #ffe6e6; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #4CAF50; color: white; }
+        tr:hover { background-color: #f5f5f5; }
+        .precio { font-weight: bold; color: #2c5530; }
+        .tendencia-subiendo { color: #4CAF50; }
+        .tendencia-bajando { color: #f44336; }
+        .tendencia-estable { color: #ff9800; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 AgroSoft - Recomendaciones de Cultivos</h1>
+            <p>Basado en datos oficiales de Corabastos (SIPSA-DANE)</p>
+        </div>
+
+        <div class="form-section">
+            <form method="get">
+                <div class="form-group">
+                    <label for="municipio">Municipio de la Sabana Occidental:</label>
+                    <select name="municipio" id="municipio">
+                        {% for m in municipios %}
+                            <option value="{{ m }}" {% if m == municipio_seleccionado %}selected{% endif %}>{{ m }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fecha">Fecha de siembra proyectada:</label>
+                    <input type="date" name="fecha" id="fecha" value="{{ fecha_proyeccion }}">
+                </div>
+                <button type="submit">🔍 Obtener Recomendaciones</button>
+            </form>
+        </div>
+
+        {% if error %}
+            <div class="error">
+                <strong>Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        {% if estadisticas %}
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>{{ estadisticas.total_productos }}</h3>
+                    <p>Productos Disponibles</p>
+                </div>
+                <div class="stat-card">
+                    <h3>${{ estadisticas.precio_promedio_general|floatformat:0 }}</h3>
+                    <p>Precio Promedio</p>
+                </div>
+                <div class="stat-card">
+                    <h3>{{ estadisticas.fecha_ultima_actualizacion }}</h3>
+                    <p>Última Actualización</p>
+                </div>
+                {% if clima %}
+                <div class="stat-card">
+                    <h3>{{ clima }}°C</h3>
+                    <p>Clima Estimado</p>
+                </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if recomendaciones %}
+            <h2>📊 Recomendaciones para {{ municipio_seleccionado }} - {{ fecha_proyeccion|date:"d/m/Y" }}</h2>
+            <p><strong>Fuente:</strong> {{ metodo_proyeccion }}</p>
+            <div style="background: #e8f5e8; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                <p><strong>🎯 Análisis Personalizado:</strong> Los precios y rentabilidades han sido ajustados específicamente para <strong>{{ municipio_seleccionado }}</strong> considerando las condiciones locales de producción y la época de siembra seleccionada.</p>
+            </div>
+
+            {% if mensaje_gracioso %}
+            <div style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%); padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 5px solid #ff6b6b; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <h3 style="color: #d63031; margin-top: 0; font-size: 1.2em;">
+                    🚨 ¡Alerta de Rentabilidad Baja! 🚨
+                </h3>
+                <p style="font-size: 1.1em; color: #2d3436; margin: 10px 0; font-weight: 500;">
+                    {{ mensaje_gracioso }}
+                </p>
+                <p style="font-size: 0.9em; color: #636e72; margin-bottom: 0; font-style: italic;">
+                    💡 <strong>Consejo:</strong> Considera esperar una época más favorable o explorar alternativas más rentables.
+                </p>
+            </div>
+            {% endif %}
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>🥬 Producto</th>
+                        <th>💰 Precio Actual</th>
+                        <th>📈 Precio Promedio</th>
+                        <th>📊 Tendencia</th>
+                        <th>📦 Presentación</th>
+                        <th>⭐ Rentabilidad</th>
+                        <th>🏘️ Factor Municipal</th>
+                        <th>🌡️ Factor Climático</th>
+                        <th>🌤️ Clima Actual</th>
+                        <th>📅 Última Actualización</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in recomendaciones %}
+                    <tr>
+                        <td><strong>{{ r.producto }}</strong></td>
+                        <td class="precio">${{ r.precio_actual|floatformat:0 }}</td>
+                        <td>${{ r.precio_promedio|floatformat:0 }}</td>
+                        <td class="tendencia-{{ r.tendencia|lower }}">{{ r.tendencia }}</td>
+                        <td>{{ r.presentacion }} ({{ r.unidad }})</td>
+                        <td>{{ r.rentabilidad_estimada|floatformat:1 }}%</td>
+                        <td>
+                            {% if r.municipio_factor > 1.05 %}
+                                <span style="color: #4CAF50;">🟢 Favorable ({{ r.municipio_factor|floatformat:2 }}x)</span>
+                            {% elif r.municipio_factor < 0.95 %}
+                                <span style="color: #f44336;">🔴 Desafiante ({{ r.municipio_factor|floatformat:2 }}x)</span>
+                            {% else %}
+                                <span style="color: #ff9800;">🟡 Neutral ({{ r.municipio_factor|floatformat:2 }}x)</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if r.clima_factor > 1.1 %}
+                                <span style="color: #4CAF50;">🌡️ Ideal ({{ r.clima_factor|floatformat:2 }}x)</span>
+                            {% elif r.clima_factor < 0.9 %}
+                                <span style="color: #f44336;">❄️ Adverso ({{ r.clima_factor|floatformat:2 }}x)</span>
+                            {% else %}
+                                <span style="color: #ff9800;">🌤️ Adecuado ({{ r.clima_factor|floatformat:2 }}x)</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if clima %}
+                                <span style="color: #2196F3;">🌡️ {{ clima }}°C</span>
+                            {% else %}
+                                <span style="color: #999;">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ r.fecha_ultimo_precio|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 5px;">
+                <h3>💡 Consejos Personalizados para {{ municipio_seleccionado }}:</h3>
+                <ul>
+                    <li><strong>🟢 Factor Favorable:</strong> Productos con condiciones óptimas para su municipio</li>
+                    <li><strong>🟡 Factor Neutral:</strong> Productos con condiciones estándar</li>
+                    <li><strong>🔴 Factor Desafiante:</strong> Productos que requieren más cuidado en su zona</li>
+                    <li>Los productos con tendencia "Subiendo" pueden ser más rentables a futuro</li>
+                    <li>La época de siembra seleccionada ({{ fecha_proyeccion|date:"F" }}) afecta los precios proyectados</li>
+                    <li>Considere los costos de producción específicos de su finca</li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
