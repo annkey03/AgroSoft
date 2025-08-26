@@ -83,14 +83,13 @@ WSGI_APPLICATION = 'produccion.wsgi.application'
 import dj_database_url
 
 DATABASES = {
-
     'default': dj_database_url.config(
-        default='postgresql://postgres:vivis123@localhost:5432/produccion',
+        default=os.getenv("DATABASE_URL", "postgresql://postgres:1234567890@localhost:5432/produccion"),
         conn_max_age=600,
         conn_health_checks=True,
-        engine='django.db.backends.postgresql',
     )
 }
+
 
 
 # Password validation
