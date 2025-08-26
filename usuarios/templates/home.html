@@ -50,6 +50,9 @@
             <div class="navbar-right">
                 <a href="{% url 'home' %}">Home</a>
                 <a href="{% url 'productos' %}">Productos</a>
+                {% if user.tipo == 'admin' %}
+                <a href="{% url 'admin_dashboard' %}">Panel de Administrador</a>
+                {% endif %}
             </div>
         </div>
 

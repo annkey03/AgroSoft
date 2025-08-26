@@ -24,7 +24,7 @@
             <div class="card bg-success text-white">
                 <div class="card-body">
                     <h5 class="card-title">Cultivos Activos</h5>
-                    <h2 class="card-text">{{ proyecciones|length }}</h2>
+                    <h2 class="card-text">{{ total_cultivos }}</h2>
                 </div>
             </div>
         </div>
@@ -32,7 +32,21 @@
             <div class="card bg-info text-white">
                 <div class="card-body">
                     <h5 class="card-title">Rendimiento Promedio</h5>
-                    <h2 class="card-text">90%</h2>
+                    <h2 class="card-text">{{ rendimiento_promedio|floatformat:2 }} kg</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico de puntos -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Gráfico de Producción Proyectada</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="graficoProduccion" width="400" height="200"></canvas>
                 </div>
             </div>
         </div>
@@ -91,23 +105,83 @@
                     <h5>Información Importante</h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>Nota:</strong> Esta es la primera parte (7/13) de la implementación de producción proyectada. 
-                    Los cálculos actuales incluyen:</p>
+                    <p><strong>Nota:</strong> Los cálculos actuales incluyen:</p>
                     <ul>
                         <li>Ingreso proyectado = Cantidad × Precio estimado</li>
                         <li>Rendimiento estimado = Cantidad × 90% (factor de seguridad)</li>
                         <li>Los precios son estimados y pueden variar según el mercado</li>
-                    </ul>
-                    <p>Las próximas actualizaciones incluirán:</p>
-                    <ul>
-                        <li>Análisis de tendencias de precios</li>
-                        <li>Factores climáticos en la proyección</li>
-                        <li>Comparación con períodos anteriores</li>
-                        <li>Alertas de riesgo</li>
+                        <li>El gráfico muestra la relación entre cantidad e ingreso proyectado por cultivo</li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Script para el gráfico de puntos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('graficoProduccion').getContext('2d');
+    
+    // Convertir datos de Django a formato JavaScript
+    const labels = JSON.parse('{{ datos_grafico.labels|escapejs }}');
+    const ingresos = JSON.parse('{{ datos_grafico.ingresos|escapejs }}');
+    const colores = JSON.parse('{{ datos_grafico.colores|escapejs }}');
+    const cantidades = JSON.parse('{{ datos_grafico.cantidades|escapejs }}');
+    
+    const datos = {
+        labels: labels,
+        datasets: [{
+            label: 'Producción Proyectada',
+            data: ingresos,
+            backgroundColor: colores,
+            borderColor: colores,
+            borderWidth: 1,
+            pointRadius: 8,
+            pointHoverRadius: 12
+        }]
+    };
+
+    const config = {
+        type: 'scatter',
+        data: datos,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.raw;
+                            const cantidad = cantidades[context.dataIndex];
+                            return `${label}: $${value.toLocaleString()} (${cantidad} kg)`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Cultivos'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Ingreso Proyectado ($)'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    };
+
+    new Chart(ctx, config);
+});
+</script>
 {% endblock %}
